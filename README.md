@@ -185,51 +185,6 @@ gcloud run domain-mappings create \
   --region us-central1
 ```
 
-### Complete Deployment Script
-
-Create a deployment script for easier deployments:
-
-```bash
-#!/bin/bash
-
-# Configuration
-PROJECT_ID=my-auth-project
-REGION=us-central1
-REGISTRY=auth-repo
-
-# Set project
-gcloud config set project $PROJECT_ID
-
-# Build and push server
-echo "Building server image..."
-docker build -t us-central1-docker.pkg.dev/$PROJECT_ID/$REGISTRY/auth-server:latest ./server
-docker push us-central1-docker.pkg.dev/$PROJECT_ID/$REGISTRY/auth-server:latest
-
-# Build and push client
-echo "Building client image..."
-docker build -t us-central1-docker.pkg.dev/$PROJECT_ID/$REGISTRY/auth-client:latest ./client
-docker push us-central1-docker.pkg.dev/$PROJECT_ID/$REGISTRY/auth-client:latest
-
-# Deploy server
-echo "Deploying server..."
-gcloud run deploy auth-server \
-  --image us-central1-docker.pkg.dev/$PROJECT_ID/$REGISTRY/auth-server:latest \
-  --platform managed \
-  --region $REGION \
-  --allow-unauthenticated \
-  --set-env-vars MONGO_URI=$MONGO_URI,JWT_SECRET=$JWT_SECRET,CLIENT_URL=$CLIENT_URL
-
-# Deploy client
-echo "Deploying client..."
-gcloud run deploy auth-client \
-  --image us-central1-docker.pkg.dev/$PROJECT_ID/$REGISTRY/auth-client:latest \
-  --platform managed \
-  --region $REGION \
-  --allow-unauthenticated
-
-echo "Deployment complete!"
-```
-
 ## API Reference
 
 ### Base URL
