@@ -5,6 +5,11 @@ node_modules/cron-logs.json
 .env.*.local
 server/.env
 client/.env
+# Environment files
+.env
+.env.*
+**/.env
+**/.env.*
 
 # Dependency directories
 node_modules/
