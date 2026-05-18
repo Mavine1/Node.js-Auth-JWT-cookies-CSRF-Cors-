@@ -8,7 +8,7 @@ export function validateBody<T extends z.ZodTypeAny>(schema: T) {
     if (!result.success) {
       return res.status(400).json({
         message: "Invalid request body",
-        errors: result.error.issues.map((issue) => issue.message),
+        errors: result.error.issues.map((issue: z.ZodIssue) => issue.message),
       });
     }
 

@@ -153,7 +153,7 @@ router.post("/refresh", requireCsrf, async (req, res) => {
 
     if (decodedUserInfo.type !== "refresh") {
       return res.status(401).json({
-        message: "Invalied refresh token type provided",
+        message: "Invalid refresh token type provided",
       });
     }
 
