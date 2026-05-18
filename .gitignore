@@ -3,6 +3,8 @@ node_modules/cron-logs.json
 .env.local
 .env.production
 .env.*.local
+server/.env
+client/.env
 
 # Dependency directories
 node_modules/
