@@ -32,6 +32,7 @@ export function requireAccessAuth(
     req.authUser = {
       userId: decoded.userId,
       role: decoded.role,
+      type: decoded.type,
     };
 
     next();
