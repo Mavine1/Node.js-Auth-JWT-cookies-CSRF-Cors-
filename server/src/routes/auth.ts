@@ -141,7 +141,7 @@ router.post("/refresh", requireCsrf, async (req, res) => {
     const refreshToken = req.cookies?.["refresh_token"];
 
     if (!refreshToken) {
-      return res.json(401).json({
+      return res.status(401).json({
         message: "No refresh token",
       });
     }
@@ -152,7 +152,7 @@ router.post("/refresh", requireCsrf, async (req, res) => {
     ) as AuthTokenPayload;
 
     if (decodedUserInfo.type !== "refresh") {
-      return res.json(401).json({
+      return res.status(401).json({
         message: "Invalied refresh token type provided",
       });
     }
@@ -163,7 +163,7 @@ router.post("/refresh", requireCsrf, async (req, res) => {
       message: "Token refreshed",
     });
   } catch {
-    return res.json(401).json({
+    return res.status(401).json({
       message: "Refresh failed",
     });
   }
