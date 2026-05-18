@@ -1,2 +1,31 @@
 node_modules/cron-logs.json
 .env
+.env.local
+.env.production
+.env.*.local
+
+# Dependency directories
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Misc
+*.pid
+seed
+.DS_Store
