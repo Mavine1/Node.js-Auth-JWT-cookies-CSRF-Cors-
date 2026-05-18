@@ -1,8 +1,6 @@
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import api from "../api";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -15,12 +13,11 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const res = await axios.post(`${API_URL}/auth/login`, {
+      const res = await api.post("/auth/login", {
         email,
         password,
       });
 
-      localStorage.setItem("token", res.data.token);
       setMessage("Login success");
       navigate("/dashboard");
     } catch (error) {
