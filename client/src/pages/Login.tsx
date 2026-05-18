@@ -13,7 +13,7 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const res = await api.post("/auth/login", {
+      await api.post("/auth/login", {
         email,
         password,
       });
