@@ -4,14 +4,45 @@ import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
-import authRoutes from "./routes/auth.js";
 import helmet from "helmet";
+
+import authRoutes from "./routes/auth.js";
 
 dotenv.config();
 
 const app = express();
 
 app.disable("x-powered-by");
+
+const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS
+  ? process.env.CORS_ALLOWED_ORIGINS.split(",").map((origin) =>
+      origin.trim(),
+    )
+  : [];
+
+app.use(helmet());
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  }),
+);
+
+app.options("*", cors());
+
+app.use(express.json());
+app.use(cookieParser());
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -29,39 +60,18 @@ const authLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: {
-    message: "Too many auth attempts, please try again later",
+    message: "Too many authentication attempts, please try again later",
   },
 });
 
-app.use(helmet());
-
-//allowlist
-// *
-app.use(
-  cors({
-    origin(origin, callback) {
-      if (!origin) {
-        return callback(null, true);
-      }
-
-      if (process.env.CORS_ALLOWED_ORIGINS?.includes(origin)) {
-        return callback(null, true);
-      }
-    },
-    credentials: true,
-  }),
-);
-
-app.use(cookieParser());
-app.use(express.json());
-
 app.use("/api", apiLimiter);
+
 app.use("/api/auth/login", authLimiter);
 app.use("/api/auth/register", authLimiter);
 app.use("/api/auth/refresh", authLimiter);
 
 app.get("/api/health", (_req, res) => {
-  res.json({
+  res.status(200).json({
     ok: true,
     message: "Server is running",
   });
@@ -75,13 +85,15 @@ const MONGO_URI = process.env.MONGO_URI || "";
 async function startServer() {
   try {
     await mongoose.connect(MONGO_URI);
+
     console.log("MongoDB connected");
 
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
   } catch (error) {
-    console.error("Server start failed", error);
+    console.error("Failed to start server:", error);
+
     process.exit(1);
   }
 }
